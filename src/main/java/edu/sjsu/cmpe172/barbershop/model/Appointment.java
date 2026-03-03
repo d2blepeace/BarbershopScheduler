@@ -12,7 +12,6 @@ public class Appointment {
     private LocalDateTime bookedAt;
     private String notes;
    
-
     public Appointment() {}
 
     public Appointment(Long appointmentId, Long customerId, Long providerId, Long serviceId, Long slotId, 
@@ -29,26 +28,26 @@ public class Appointment {
     
     // Getter and setters
     public Long getAppointmentId() { return appointmentId; }
-    public void setAppointmentId(Long appointmentId) { this.appointmentId = appointmentId; }
+    public void setAppointmentId(Long appointmentId) {this.appointmentId = appointmentId;}
 
-    public Long getCustomerId() { return customerId; }
-    public void setCustomerId(Long customerId) { this.customerId = customerId; }
+    public Long getCustomerId() {return customerId;}
+    public void setCustomerId(Long customerId) {this.customerId = customerId;}
 
-    public Long getProviderId() { return providerId; }
-    public void setProviderId(Long providerId) { this.providerId = providerId; }
+    public Long getProviderId() {return providerId; }
+    public void setProviderId(Long providerId) {this.providerId = providerId;}
 
-    public Long getServiceId() { return serviceId; }
-    public void setServiceId(Long serviceId) { this.serviceId = serviceId; }
+    public Long getServiceId() {return serviceId;}
+    public void setServiceId(Long serviceId) {this.serviceId = serviceId;}
 
-    public Long getSlotId() { return slotId; }
-    public void setSlotId(Long slotId) { this.slotId = slotId; }
+    public Long getSlotId() {return slotId; }
+    public void setSlotId(Long slotId) {this.slotId = slotId;}
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public String getStatus() {return status;}
+    public void setStatus(String status) {this.status = status;}
 
-    public LocalDateTime getBookedAt() { return bookedAt; }
-    public void setBookedAt(LocalDateTime bookedAt) { this.bookedAt = bookedAt; }
+    public LocalDateTime getBookedAt() {return bookedAt; }
+    public void setBookedAt(LocalDateTime bookedAt) {this.bookedAt = bookedAt;}
 
     public String getNotes() { return notes; }
-    public void setNotes(String notes) { this.notes = notes; }
+    public void setNotes(String notes) {this.notes = notes;}
 }
