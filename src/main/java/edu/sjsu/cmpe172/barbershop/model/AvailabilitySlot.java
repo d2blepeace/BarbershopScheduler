@@ -1,21 +1,22 @@
 package edu.sjsu.cmpe172.barbershop.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 public class AvailabilitySlot {
     private Long slotId;
     private Long providerId;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private LocalDate date;
+    private LocalTime time;
     private boolean isAvailable;
 
     public AvailabilitySlot() {}
 
-    public AvailabilitySlot(Long slotId, Long providerId,
-                            LocalDateTime startTime, LocalDateTime endTime, boolean isAvailable) {
+    public AvailabilitySlot(Long slotId, Long providerId, LocalDate date, LocalTime time, boolean isAvailable) {
         this.slotId = slotId;
         this.providerId = providerId;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.date = date;
+        this.time = time;
         this.isAvailable = isAvailable;
     }
 
@@ -26,11 +27,11 @@ public class AvailabilitySlot {
     public Long getProviderId() { return providerId; }
     public void setProviderId(Long providerId) { this.providerId = providerId; }
 
-    public LocalDateTime getStartTime() { return startTime; }
-    public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
+    public LocalDate getDate() {return date;}
+    public void setDate(LocalDate date) {this.date = date;}
 
-    public LocalDateTime getEndTime() { return endTime; }
-    public void setEndTime(LocalDateTime endTime) { this.endTime = endTime; }
+    public LocalTime getTime() { return time; }
+    public void setTime(LocalTime time) { this.time = time; }
 
     public boolean isAvailable() { return isAvailable; }
     public void setAvailable(boolean available) { isAvailable = available; }
