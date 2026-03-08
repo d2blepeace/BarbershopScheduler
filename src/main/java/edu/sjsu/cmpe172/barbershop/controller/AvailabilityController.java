@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import edu.sjsu.cmpe172.barbershop.model.AvailabilitySlot;
 import edu.sjsu.cmpe172.barbershop.service.SalonService;
 
+@RestController
 public class AvailabilityController {
     private final SalonService salonService;
 
