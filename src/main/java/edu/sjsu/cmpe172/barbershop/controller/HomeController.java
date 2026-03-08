@@ -8,6 +8,6 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-        return "Barbershop Scheduler API is running.";
+        return "Vintage Razor Barbershop & Salon API is running.";
     }
 }

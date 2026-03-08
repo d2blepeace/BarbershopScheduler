@@ -21,8 +21,7 @@ public class AvailabilitySlotRepository {
         slots.add(new AvailabilitySlot(4L, providerId, selectedDate, LocalTime.of(15, 0), true));
         slots.add(new AvailabilitySlot(5L, providerId, selectedDate, LocalTime.of(16, 30), true));
         slots.add(new AvailabilitySlot(6L, providerId, selectedDate, LocalTime.of(18, 0), true));
-        
+
         return slots;
     }
-    
 }

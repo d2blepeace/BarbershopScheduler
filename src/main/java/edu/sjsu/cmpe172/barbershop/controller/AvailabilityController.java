@@ -18,9 +18,9 @@ public class AvailabilityController {
     }
 
     @GetMapping("/slots")
-    public List<AvailabilitySlot> geAvailabilitySlots(
+    public List<AvailabilitySlot> getAvailabilitySlots(
             @RequestParam Long providerId, 
             @RequestParam String date) {
-        return salonService.geAvailabilitySlots(providerId, date);
+        return salonService.getAvailabilitySlots(providerId, date);
     }
 }

@@ -1,0 +1,21 @@
+### Homepage
+GET http://localhost:8080/
+
+### The list of all services
+GET http://localhost:8080/services
+
+### Get slots
+GET http://localhost:8080/slots?providerId=1&date=2026-03-30
+
+### Create appointment
+POST http://localhost:8080/appointments
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "providerId": 2,
+  "serviceId": 1,
+  "date": "2026-03-30",
+  "time": "15:00",
+  "notes": "Testing for appointment"
+}
