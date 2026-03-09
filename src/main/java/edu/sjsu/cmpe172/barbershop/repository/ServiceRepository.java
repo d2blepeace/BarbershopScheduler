@@ -4,8 +4,21 @@ import edu.sjsu.cmpe172.barbershop.model.Service;
 import org.springframework.stereotype.Repository;
 import java.util.*;
 
+/**
+ * Repository layer responsible for getting salon service
+ * 
+ * This class would query SQL database using JDBC 
+ * 
+ * Flow: Controller -> Service -> Repo -> Database
+ */
 @Repository
 public class ServiceRepository {
+
+    /**
+     * Return all service offered by a salon
+     * In the future, this will execute SQL, currently it is just mockup data
+     * @return
+     */
     public List<Service> findAll() {
         List<Service> services = new ArrayList<>();
 

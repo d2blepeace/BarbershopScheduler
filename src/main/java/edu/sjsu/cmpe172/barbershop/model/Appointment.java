@@ -2,6 +2,12 @@ package edu.sjsu.cmpe172.barbershop.model;
 
 import java.time.LocalDateTime;
 
+/**
+ * Represent a booking appointment of a customer:
+ * Appointment connects: Customer -> Provider -> Service -> Time Slots
+ * 
+ * Correspond to 'appointments' in database
+ */
 public class Appointment {
     private Long appointmentId;
     private Long customerId;

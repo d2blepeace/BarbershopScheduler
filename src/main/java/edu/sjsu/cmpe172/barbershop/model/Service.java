@@ -1,5 +1,9 @@
 package edu.sjsu.cmpe172.barbershop.model;
 
+/**
+ * Represents a type of service that the salon provide:
+ * Look at Figma Mockup for all available services.
+ */
 public class Service {
     private Long serviceId;
     private String serviceName;

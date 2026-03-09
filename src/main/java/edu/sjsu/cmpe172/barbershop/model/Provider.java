@@ -1,5 +1,12 @@
 package edu.sjsu.cmpe172.barbershop.model;
 
+/**
+ * Represent a service provider:
+ * - Barber
+ * - Nail Technician
+ * 
+ * A provider will offer service and availability time slots
+ */
 public class Provider {
     private Long providerId;
     private String name;

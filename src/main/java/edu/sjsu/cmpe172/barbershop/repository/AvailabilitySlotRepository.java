@@ -8,8 +8,18 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handles data access related to provider availability slots
+ * In the future, this will execute SQL queries, right now it is just mockup data
+ */
 @Repository
 public class AvailabilitySlotRepository {
+    /**
+     * Find all available slots of a provider on a selected date
+     * @param providerId - id of provider
+     * @param date - selected date
+     * @return list of available time slots in selected date
+     */
     public List<AvailabilitySlot> findAvailabilitySlots(Long providerId, String date) {
         List<AvailabilitySlot> slots = new ArrayList<>();
         LocalDate selectedDate = LocalDate.parse(date);

@@ -3,6 +3,9 @@ package edu.sjsu.cmpe172.barbershop.model;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+/**
+ * Represent a time slot when provider is available for booking
+ */
 public class AvailabilitySlot {
     private Long slotId;
     private Long providerId;

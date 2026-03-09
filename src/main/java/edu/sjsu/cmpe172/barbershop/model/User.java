@@ -2,6 +2,10 @@ package edu.sjsu.cmpe172.barbershop.model;
 
 import java.time.LocalDateTime;
 
+/**
+ * Represent a general user of the system
+ * A user can have different role: Customer, Provider (Barber/Nail technician), Admin
+ */
 public class User {
     private Long id;
     private String username;
