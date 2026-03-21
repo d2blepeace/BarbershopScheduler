@@ -98,4 +98,11 @@ public class AppointmentRepository {
         return jdbcTemplate.update(sql, appointmentId, status);
     }
 
+    //find and return all appointment from database
+    public List<Appointment> getAllAppointments() {
+        String sql = "SELECT * FROM appointments ORDER BY booked_at DESC";
+        return jdbcTemplate.query(sql, appointmentRowMapper);
+    }
+
+
 }
