@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import edu.sjsu.cmpe172.barbershop.model.AvailabilitySlot;
 
 import java.sql.Date;
-import java.sql.Time;
 import java.util.List;
 import java.util.Optional;
 
