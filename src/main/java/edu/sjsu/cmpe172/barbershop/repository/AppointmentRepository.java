@@ -97,12 +97,4 @@ public class AppointmentRepository {
         String sql = "UPDATE appointments SET status = ? WHERE appointment_id = ?";
         return jdbcTemplate.update(sql, appointmentId, status);
     }
-
-    //find and return all appointment from database
-    public List<Appointment> getAllAppointments() {
-        String sql = "SELECT * FROM appointments ORDER BY booked_at DESC";
-        return jdbcTemplate.query(sql, appointmentRowMapper);
-    }
-
-
 }
