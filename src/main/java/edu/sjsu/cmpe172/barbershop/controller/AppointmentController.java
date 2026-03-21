@@ -1,19 +1,37 @@
 package edu.sjsu.cmpe172.barbershop.controller;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.HashMap;
-import java.util.Map;
+import edu.sjsu.cmpe172.barbershop.dto.AppointmentRequest;
+import edu.sjsu.cmpe172.barbershop.model.Appointment;
+import edu.sjsu.cmpe172.barbershop.service.AppointmentService;
+
+import java.util.List;
 
 @RestController
+@RequestMapping("/appointments")
 public class AppointmentController {
 
-    @PostMapping("/appointments") 
-    public Map<String, Object> createAppointment(@RequestBody Map<String, Object> request) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Appointment booked successfully!");
-        response.put ("appointment", request);
+    private final AppointmentService appointmentService;
+    public AppointmentController(AppointmentService appointmentService) {
+        this.appointmentService = appointmentService;
+    }
 
-        return response;
+    @PostMapping
+    public Appointment createAppointment(@RequestBody AppointmentRequest request) {
+        return appointmentService.createAppointment(
+            request.getCustomerId(), request.getServiceId(), request.getSlotId(), request.getNotes());
+    }
+
+    @GetMapping
+    public List<Appointment> getAllAppointments() {
+        return appointmentService.getAllAppointments();
+    }
+
+    @PutMapping("/{appointmentId}/cancel")
+    public String cancelAppointment(@PathVariable Long appointmentId) {
+        appointmentService.cancelAppointment(appointmentId);
+        return "Appointment cancelled successfully.";
     }
 }
