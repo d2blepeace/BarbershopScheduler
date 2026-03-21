@@ -1,36 +1,57 @@
 package edu.sjsu.cmpe172.barbershop.repository;
 
 import edu.sjsu.cmpe172.barbershop.model.Service;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import java.util.*;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
- * Repository layer responsible for getting salon service
+ * Rsponsibility:
+ *  - Retrieve service data from database
+ *  - Provide basic queries: findAll, findById
  * 
- * This class would query SQL database using JDBC 
- * 
- * Flow: Controller -> Service -> Repo -> Database
+ * IMPORTANT: 
+ *  - this class only handle interaction to database
+ *  - DOES NOT validate business rule or if a service can be booked
  */
 @Repository
 public class ServiceRepository {
+    private final JdbcTemplate jdbcTemplate;
+
+    private ServiceRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    private final RowMapper<Service> servicRowMapper = (rs, rowNum) -> {
+        Service service = new Service();
+
+        service.setServiceId(rs.getLong("service_id"));
+        service.setServiceName(rs.getString("service_name"));
+        service.setDuration(rs.getInt("duration"));
+        service.setPrice(rs.getDouble("price"));
+        service.setType(rs.getString("type"));
+
+        return service;
+    };
+
+    // get all services offered by salon
+    public List<Service> findAll() {
+        String sql = "SELECT * FROM services ORDER BY service_id";
+        return jdbcTemplate.query(sql, servicRowMapper);
+    }
 
     /**
-     * Return all service offered by a salon
-     * In the future, this will execute SQL, currently it is just mockup data
-     * @return
+     * find a service by ID to validate that service exists
+     * @param serviceId
+     * @return empty if service not found
      */
-    public List<Service> findAll() {
-        List<Service> services = new ArrayList<>();
-
-        services.add(new Service(1L, "Haircut", 30, 35.0, "Hair"));
-        services.add(new Service(2L, "Women Haircut & Styling", 55, 50.0, "Hair"));
-        services.add(new Service(3L, "Women Haircut & Color", 120, 150.0, "Hair"));
-        services.add(new Service(4L, "Men haircut & Shaving", 35, 50.0, "Hair"));
-        services.add(new Service(5L, "Haircut & Beard trim", 60, 70.0, "Hair"));
-        services.add(new Service(6L, "Kid haircut", 30, 20.0, "Hair"));
-        services.add(new Service(7L, "Express Nail Service", 30, 50.0, "Nail"));
-        services.add(new Service(8L, "Manicure & Color", 60, 100.0, "Nail"));
-
-        return services;
+    public Optional<Service> findById(Long serviceId) {
+        String sql = "SELECT * FROM services WHERE serivce_id = ?";
+        List<Service> result = jdbcTemplate.query(sql, servicRowMapper, serviceId);
+        return result.stream().findFirst();
     }
 }
