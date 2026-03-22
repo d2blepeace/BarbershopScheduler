@@ -66,19 +66,34 @@ public class AvailabilitySlotRepository {
         return result.stream().findFirst();
     }
 
-    /**
-     * Update availability of a slot.
-     *
-     * Used in booking flow:
-     * - When booking, set is_available = false
-     * - When cancelling, set is_available = true
-     * 
-     * update() is used for: INSERT, UPDATE, DELETE
-     * return number of row affected (1 row if successfully update)
-     */
-    public int updateAvailability(Long slotId, boolean isAvailable) {
-        String sql = "UPDATE availability_slots SET is_available = ? WHERE slot_id = ?";
-        return jdbcTemplate.update(sql, isAvailable, slotId);
+    // Lock the slot row while booking transaction is running
+    public Optional<AvailabilitySlot> findByIdForUpdate(Long slotId) {
+        String sql = """
+                SELECT * FROM availability_slots
+                WHERE slot_id = ?
+                FOR UPDATE 
+                """;
+        List<AvailabilitySlot> result = jdbcTemplate.query(sql, slotRowMapper, slotId);
+        return result.stream().findFirst();
     }
-    
+
+    // Mark slot available again when appointment is cancelled
+    public int markSlotAvailable(Long slotId) {
+        String sql = """
+                UPDATE availability_slots
+                SET is_available = true
+                WHERE slot_id = ?
+                """;
+        return jdbcTemplate.update(sql, slotId);
+    }
+
+    // Mark slot unavailable only if the appointment is still available
+    public int markSlotUnavailable(Long slotId) {
+        String sql = """
+                UPDATE availability_slots
+                SET is_available = false
+                WHERE slot_id = ? AND is_available = true
+                """;
+        return jdbcTemplate.update(sql, slotId);
+    }
 }

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -50,12 +51,12 @@ public class AppointmentService {
      * 
      * @Transactional ensure all steps above succeed or fail together
      */
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public Appointment createAppointment(
             Long customerId, Long serviceId, 
             Long slotId, String notes) {
-        // 1. Check if slot exists
-        AvailabilitySlot slot = availSlotRepo.findById(slotId)
+        // 1. Check if slot exists, also lock slot row during booking transaction
+        AvailabilitySlot slot = availSlotRepo.findByIdForUpdate(slotId)
             .orElseThrow(() -> new RuntimeException("Slot not found"));
 
         // 2. Check if slot is available
@@ -64,6 +65,12 @@ public class AppointmentService {
         // 3. Validate service exist
         edu.sjsu.cmpe172.barbershop.model.Service service = serviceRepo.findById(serviceId)
             .orElseThrow(() -> new RuntimeException("Service not found"));
+
+        // Claim the slot first to prevent double booking
+        int rowsUpdated = availSlotRepo.markSlotUnavailable(slotId);
+        if (rowsUpdated == 0) {
+            throw new RuntimeException("Slot is already booked by another customer.");
+        }
         
         /**
          * 4. Create appointment object
@@ -84,11 +91,10 @@ public class AppointmentService {
          */
         try {
             appointmentRepo.save(appointment);
-            availSlotRepo.updateAvailability(slotId, false);
         }
         catch (DataIntegrityViolationException dive) {
             // this will happen if another user booked the same slot at the same time
-            throw new RuntimeException("Slot is already booked");
+            throw new RuntimeException("Slot is already booked by another customer.");
         }
         return appointment;
     }
@@ -96,7 +102,7 @@ public class AppointmentService {
     /**
      * cancel an appointment 
      * STEPS:
-     * 1. find appointment
+     * 1. find appointment 
      * 2. check status
      * 3. Update status to CANCELLED
      * 4. mark slot available again
@@ -113,7 +119,7 @@ public class AppointmentService {
         
         // 3 and 4: update appointment and mark it available
         appointmentRepo.updateStatus(appointmentId, "CANCELLED");
-        availSlotRepo.updateAvailability(appointment.getSlotId(), true);
+        availSlotRepo.markSlotAvailable(appointment.getSlotId());
     }
 
     //find all appointments and return it from DB
