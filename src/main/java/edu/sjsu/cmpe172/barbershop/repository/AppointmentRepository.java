@@ -95,6 +95,6 @@ public class AppointmentRepository {
      */
     public int updateStatus(Long appointmentId, String status) {
         String sql = "UPDATE appointments SET status = ? WHERE appointment_id = ?";
-        return jdbcTemplate.update(sql, appointmentId, status);
+        return jdbcTemplate.update(sql, status, appointmentId);
     }
 }

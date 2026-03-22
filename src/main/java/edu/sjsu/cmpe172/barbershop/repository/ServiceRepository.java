@@ -22,7 +22,7 @@ import java.util.Optional;
 public class ServiceRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    private ServiceRepository(JdbcTemplate jdbcTemplate) {
+    public ServiceRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -50,7 +50,7 @@ public class ServiceRepository {
      * @return empty if service not found
      */
     public Optional<Service> findById(Long serviceId) {
-        String sql = "SELECT * FROM services WHERE serivce_id = ?";
+        String sql = "SELECT * FROM services WHERE service_id = ?";
         List<Service> result = jdbcTemplate.query(sql, servicRowMapper, serviceId);
         return result.stream().findFirst();
     }

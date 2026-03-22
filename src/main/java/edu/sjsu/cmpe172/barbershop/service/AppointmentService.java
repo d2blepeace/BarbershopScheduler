@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
 import edu.sjsu.cmpe172.barbershop.model.Appointment;
 import edu.sjsu.cmpe172.barbershop.model.AvailabilitySlot;
-import edu.sjsu.cmpe172.barbershop.model.Service;
 import edu.sjsu.cmpe172.barbershop.repository.AppointmentRepository;
 import edu.sjsu.cmpe172.barbershop.repository.AvailabilitySlotRepository;
 import edu.sjsu.cmpe172.barbershop.repository.ServiceRepository;
@@ -24,6 +24,7 @@ import edu.sjsu.cmpe172.barbershop.repository.ServiceRepository;
  * 
  * Flow: Controller -> AppointmentService -> Repo + Database
  */
+@Service
 public class AppointmentService {
     private final AppointmentRepository appointmentRepo;
     private final AvailabilitySlotRepository availSlotRepo;
@@ -61,7 +62,7 @@ public class AppointmentService {
         if (!slot.isAvailable()) throw new RuntimeException("Slot is already booked.");
         
         // 3. Validate service exist
-        Service service = serviceRepo.findById(serviceId)
+        edu.sjsu.cmpe172.barbershop.model.Service service = serviceRepo.findById(serviceId)
             .orElseThrow(() -> new RuntimeException("Service not found"));
         
         /**
@@ -112,7 +113,7 @@ public class AppointmentService {
         
         // 3 and 4: update appointment and mark it available
         appointmentRepo.updateStatus(appointmentId, "CANCELLED");
-        availSlotRepo.updateAvailability(appointmentId, true);
+        availSlotRepo.updateAvailability(appointment.getSlotId(), true);
     }
 
     //find all appointments and return it from DB
