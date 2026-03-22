@@ -11,9 +11,10 @@ import java.util.Optional;
 
 /**
  * Responsibility:
- * - Fetch available slots from database
- * - Find slot by ID
- * - Update slot availability (true/false)
+ *  - Retrieve available slots for a provider
+ *  - Fetch a slot by ID (normal read)
+ *  - Lock a slot row for booking (FOR UPDATE)
+ *  - Update slot availability status
  * 
  * IMPORTANT:
  * This class ONLY interacts with the database. It does NOT contain business rules 
@@ -65,8 +66,12 @@ public class AvailabilitySlotRepository {
         List<AvailabilitySlot> result = jdbcTemplate.query(sql, slotRowMapper, slotId);
         return result.stream().findFirst();
     }
-
-    // Lock the slot row while booking transaction is running
+    /**
+     * Lock a slot row during booking to prevent race conditions
+     * where two users try to book the same slot simultaneously
+     *
+     * Uses: SELECT ... FOR UPDATE
+     */
     public Optional<AvailabilitySlot> findByIdForUpdate(Long slotId) {
         String sql = """
                 SELECT * FROM availability_slots
@@ -77,7 +82,7 @@ public class AvailabilitySlotRepository {
         return result.stream().findFirst();
     }
 
-    // Mark slot available again when appointment is cancelled
+    // Mark slot available again if appointment is cancelled
     public int markSlotAvailable(Long slotId) {
         String sql = """
                 UPDATE availability_slots
@@ -87,7 +92,13 @@ public class AvailabilitySlotRepository {
         return jdbcTemplate.update(sql, slotId);
     }
 
-    // Mark slot unavailable only if the appointment is still available
+    /**
+     * Mark slot as unavailable ONLY if it is still available
+     *
+     * Returns:
+     *   1: success if slot claimed
+     *   0: failure if already booked by another transaction
+     */
     public int markSlotUnavailable(Long slotId) {
         String sql = """
                 UPDATE availability_slots

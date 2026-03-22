@@ -42,14 +42,15 @@ public class AppointmentService {
     /**
      * Create new appointment
      * STEPS:
-     * 1. Check if slot is exist
+     * 1. Lock the slot row using SELECT ... FOR UPDATE
+     *    -> prevents other transactions from accessing the same slot teh same time
      * 2. Check if slot is available
      * 3. Validate service exist
-     * 4. Create appointment object
-     * 5. Save appoinment info
-     * 6. Mark slot unavailable
-     * 
-     * @Transactional ensure all steps above succeed or fail together
+     * 4. Claim the slot using conditional update: UPDATE ... WHERE is_available = true
+     *    -> ensures only one transaction can successfully reserve the slot
+     * 5. Create appointment object
+     * 6. Save appoinment info      
+     * @Transactional ensure all steps above succeed or fail together, if fails, roll back
      */
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public Appointment createAppointment(
@@ -102,8 +103,8 @@ public class AppointmentService {
     /**
      * cancel an appointment 
      * STEPS:
-     * 1. find appointment 
-     * 2. check status
+     * 1. Retrieve appointment by ID
+     * 2. check status if it is not already CANCELLED 
      * 3. Update status to CANCELLED
      * 4. mark slot available again
      */
@@ -111,7 +112,7 @@ public class AppointmentService {
     public void cancelAppointment(Long appointmentId) {
         // 1. find appointment
         Appointment appointment = appointmentRepo.findById(appointmentId)
-            .orElseThrow(() -> new RuntimeException("Slot not found"));
+            .orElseThrow(() -> new RuntimeException("Appointment not found"));
         
         // 2. check status to prevent double canceling
         if ("CANCELLED".equalsIgnoreCase(appointment.getStatus())) 
