@@ -7,15 +7,27 @@ GET http://localhost:8080/services
 ### Get slots
 GET http://localhost:8080/slots?providerId=1&date=2026-03-30
 
-### Create appointment
+###
+
+### Create appointment (BOOK)
 POST http://localhost:8080/appointments
 Content-Type: application/json
 
 {
   "customerId": 1,
-  "providerId": 2,
   "serviceId": 1,
-  "date": "2026-03-30",
-  "time": "15:00",
-  "notes": "Testing for appointment"
+  "slotId": 1,
+  "notes": "First booking test"
 }
+
+###
+
+###
+
+### Get all appointments
+GET http://localhost:8080/appointments
+
+###
+
+### Cancel appointment (replace 1 with actual ID)
+PUT http://localhost:8080/appointments/1/cancel
