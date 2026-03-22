@@ -41,15 +41,15 @@ public class AppointmentService {
 
     /**
      * Create new appointment
-     * STEPS:
-     * 1. Lock the slot row using SELECT ... FOR UPDATE
+     *
+     * 1. Lock the slot row using SELECT ... FOR UPDATE                                 -CHECKED
      *    -> prevents other transactions from accessing the same slot teh same time
-     * 2. Check if slot is available
+     * 2. Check if slot is available                                                    -CHECKED
      * 3. Validate service exist
-     * 4. Claim the slot using conditional update: UPDATE ... WHERE is_available = true
+     * 4. Claim the slot using conditional update: UPDATE ... WHERE is_available = true -CHECKED
      *    -> ensures only one transaction can successfully reserve the slot
-     * 5. Create appointment object
-     * 6. Save appoinment info      
+     * 5. Create appointment object                                                     -CHECKED
+     * 6. Save appoinment info                                                          - CHECKD
      * @Transactional ensure all steps above succeed or fail together, if fails, roll back
      */
     @Transactional(isolation = Isolation.READ_COMMITTED)
@@ -103,10 +103,10 @@ public class AppointmentService {
     /**
      * cancel an appointment 
      * STEPS:
-     * 1. Retrieve appointment by ID
-     * 2. check status if it is not already CANCELLED 
-     * 3. Update status to CANCELLED
-     * 4. mark slot available again
+     * 1. Retrieve appointment by ID                    -checked
+     * 2. check status if it is not already CANCELLED   -checked
+     * 3. Update status to CANCELLED                    -checked
+     * 4. mark slot available again                     -checked
      */
     @Transactional
     public void cancelAppointment(Long appointmentId) {
@@ -118,7 +118,7 @@ public class AppointmentService {
         if ("CANCELLED".equalsIgnoreCase(appointment.getStatus())) 
                 throw new RuntimeException("Appointment is already cancelled.");
         
-        // 3 and 4: update appointment and mark it available
+        // 3 + 4: update appointment and mark it available
         appointmentRepo.updateStatus(appointmentId, "CANCELLED");
         availSlotRepo.markSlotAvailable(appointment.getSlotId());
     }

@@ -13,11 +13,11 @@ import java.util.Optional;
  * Responsibility:
  *  - Retrieve available slots for a provider
  *  - Fetch a slot by ID (normal read)
- *  - Lock a slot row for booking (FOR UPDATE)
+ *  - Lock a slot row for booking (for update)
  *  - Update slot availability status
  * 
  * IMPORTANT:
- * This class ONLY interacts with the database. It does NOT contain business rules 
+ * This class ONLY interact with the database. does NOT contain business rules 
  */
 @Repository
 public class AvailabilitySlotRepository {
@@ -42,7 +42,7 @@ public class AvailabilitySlotRepository {
      * Get all available slots for a specific provider on a given date.
      *
      * @param providerId - ID of barber/technician
-     * @param date       - date string (YYYY-MM-DD
+     * @param date       - date string (YYYY-MM-DD()
      */
     public List<AvailabilitySlot> findAvailabilitySlots(Long providerId, String date) {
         String sql = """
@@ -55,7 +55,7 @@ public class AvailabilitySlotRepository {
     }
 
     /**
-     * Find a slot by its primary key (slot_id).
+     * Find a slot by its primary key
      *
      * This is used in booking logic to:
      * - verify the slot exists
@@ -69,8 +69,6 @@ public class AvailabilitySlotRepository {
     /**
      * Lock a slot row during booking to prevent race conditions
      * where two users try to book the same slot simultaneously
-     *
-     * Uses: SELECT ... FOR UPDATE
      */
     public Optional<AvailabilitySlot> findByIdForUpdate(Long slotId) {
         String sql = """
