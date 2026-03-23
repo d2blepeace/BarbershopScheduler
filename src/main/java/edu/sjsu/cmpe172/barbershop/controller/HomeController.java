@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * This class provides root endpoint of the web
- * For now it only a verification that SpringBoot app is running
  * 
+ * ...
  */
 @RestController
 public class HomeController {

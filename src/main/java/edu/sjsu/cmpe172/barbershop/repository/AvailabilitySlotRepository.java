@@ -2,6 +2,7 @@ package edu.sjsu.cmpe172.barbershop.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 import edu.sjsu.cmpe172.barbershop.model.AvailabilitySlot;
 
@@ -27,6 +28,7 @@ public class AvailabilitySlotRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
     
+    @NonNull
     private final RowMapper<AvailabilitySlot> slotRowMapper = (rs, rowNum) -> {
         AvailabilitySlot slot = new AvailabilitySlot();
 
@@ -54,13 +56,7 @@ public class AvailabilitySlotRepository {
         return jdbcTemplate.query(sql, slotRowMapper, providerId, Date.valueOf(date));
     }
 
-    /**
-     * Find a slot by its primary key
-     *
-     * This is used in booking logic to:
-     * - verify the slot exists
-     * - check if it's available
-     */
+    // fidn slot by id
     public Optional<AvailabilitySlot> findById(Long slotId) {
         String sql =  "SELECT * FROM availability_slots WHERE slot_id = ?";
         List<AvailabilitySlot> result = jdbcTemplate.query(sql, slotRowMapper, slotId);
@@ -91,7 +87,7 @@ public class AvailabilitySlotRepository {
     }
 
     /**
-     * Mark slot as unavailable ONLY if it is still available
+     * Mark slot as unavailable ONLY if it is still available (true)
      *
      * Returns:
      *   1: success if slot claimed

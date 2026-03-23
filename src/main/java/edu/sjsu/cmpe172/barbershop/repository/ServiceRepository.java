@@ -4,6 +4,7 @@ import edu.sjsu.cmpe172.barbershop.model.Service;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,7 +27,8 @@ public class ServiceRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final RowMapper<Service> servicRowMapper = (rs, rowNum) -> {
+    @NonNull
+    private final RowMapper<Service> serviceRowMapper = (rs, rowNum) -> {
         Service service = new Service();
 
         service.setServiceId(rs.getLong("service_id"));
@@ -41,7 +43,7 @@ public class ServiceRepository {
     // get all services offered by salon
     public List<Service> findAll() {
         String sql = "SELECT * FROM services ORDER BY service_id";
-        return jdbcTemplate.query(sql, servicRowMapper);
+        return jdbcTemplate.query(sql, serviceRowMapper);
     }
 
     /**
@@ -51,7 +53,7 @@ public class ServiceRepository {
      */
     public Optional<Service> findById(Long serviceId) {
         String sql = "SELECT * FROM services WHERE service_id = ?";
-        List<Service> result = jdbcTemplate.query(sql, servicRowMapper, serviceId);
+        List<Service> result = jdbcTemplate.query(sql, serviceRowMapper, serviceId);
         return result.stream().findFirst();
     }
 }

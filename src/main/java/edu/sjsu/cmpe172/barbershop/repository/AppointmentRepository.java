@@ -1,11 +1,11 @@
 package edu.sjsu.cmpe172.barbershop.repository;
 
-
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.lang.NonNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import edu.sjsu.cmpe172.barbershop.model.Appointment;
@@ -25,6 +25,7 @@ public class AppointmentRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @NonNull
     // RowMapper to convert one SQL row into Appointment Object
     private final RowMapper<Appointment> appointmentRowMapper = (rs, rowNum) -> {
         Appointment appointment = new Appointment();
@@ -81,18 +82,14 @@ public class AppointmentRepository {
         return jdbcTemplate.query(sql, appointmentRowMapper);
     }
     
-    /**
-     * Find 1 appointment by its primary key, use Optional in case appointment is not existed
-     */
+    // Find 1 appointment by its primary key, use Optional in case appointment is not existed
     public Optional<Appointment> findById(Long appointmentId) {
         String sql = "SELECT * FROM appointments WHERE appointment_id = ?";
         List<Appointment> result = jdbcTemplate.query(sql, appointmentRowMapper, appointmentId);
         return result.stream().findFirst();
     }
 
-    /**
-     * Update status of an appointment: CONFIRMED, CANCELLED, COMPLETED.
-     */
+    // Update status of an appointment: CONFIRMED, CANCELLED, COMPLETED
     public int updateStatus(Long appointmentId, String status) {
         String sql = "UPDATE appointments SET status = ? WHERE appointment_id = ?";
         return jdbcTemplate.update(sql, status, appointmentId);

@@ -4,10 +4,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
+import edu.sjsu.cmpe172.barbershop.exception.SlotConflictException;
+import edu.sjsu.cmpe172.barbershop.exception.SlotUnavailableException;
 import edu.sjsu.cmpe172.barbershop.model.Appointment;
 import edu.sjsu.cmpe172.barbershop.model.AvailabilitySlot;
 import edu.sjsu.cmpe172.barbershop.repository.AppointmentRepository;
@@ -23,6 +28,9 @@ import edu.sjsu.cmpe172.barbershop.repository.ServiceRepository;
  *  - coordinate multiple repo
  *  - ensure data consistent
  * 
+ *  Create appointment with retry for concurrency conflict
+ *  Retry fires only foir slot conflcit
+
  * Flow: Controller -> AppointmentService -> Repo + Database
  */
 @Service
@@ -40,43 +48,45 @@ public class AppointmentService {
     }
 
     /**
-     * Create new appointment
+     * Create new appointment with retry for slot conflicts
      *
      * 1. Lock the slot row using SELECT ... FOR UPDATE                                 -CHECKED
      *    -> prevents other transactions from accessing the same slot teh same time
      * 2. Check if slot is available                                                    -CHECKED
      * 3. Validate service exist
-     * 4. Claim the slot using conditional update: UPDATE ... WHERE is_available = true -CHECKED
+     * 4. Claim the slot using conditional update                                       -CHECKED
      *    -> ensures only one transaction can successfully reserve the slot
      * 5. Create appointment object                                                     -CHECKED
      * 6. Save appoinment info                                                          - CHECKD
      * @Transactional ensure all steps above succeed or fail together, if fails, roll back
      */
+    @Retryable(
+    retryFor = SlotConflictException.class,
+    maxAttempts = 3,
+    backoff = @Backoff(delay = 100, multiplier = 2)
+    )
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public Appointment createAppointment(
             Long customerId, Long serviceId, 
             Long slotId, String notes) {
-        // 1. Check if slot exists, also lock slot row during booking transaction
+        // 1
         AvailabilitySlot slot = availSlotRepo.findByIdForUpdate(slotId)
             .orElseThrow(() -> new RuntimeException("Slot not found"));
 
-        // 2. Check if slot is available
-        if (!slot.isAvailable()) throw new RuntimeException("Slot is already booked.");
+        // 2
+        if (!slot.isAvailable()) throw new SlotUnavailableException("Slot " + slotId + " is already booked.");
         
-        // 3. Validate service exist
+        // 3
         edu.sjsu.cmpe172.barbershop.model.Service service = serviceRepo.findById(serviceId)
             .orElseThrow(() -> new RuntimeException("Service not found"));
 
-        // Claim the slot first to prevent double booking
+        // 4
         int rowsUpdated = availSlotRepo.markSlotUnavailable(slotId);
         if (rowsUpdated == 0) {
-            throw new RuntimeException("Slot is already booked by another customer.");
+            throw new SlotUnavailableException("Slot " + slotId + " was already claimed.");
         }
         
-        /**
-         * 4. Create appointment object
-         * notes: ProviderId derived from slot, NOT from userInput
-         */
+        // 5
         Appointment appointment = new Appointment();
         appointment.setCustomerId(customerId);
         appointment.setProviderId(slot.getProviderId());
@@ -86,18 +96,23 @@ public class AppointmentService {
         appointment.setBookedAt(LocalDateTime.now());
         appointment.setNotes(notes);
 
-        /**
-         * 5 and 6: Save info and marked slot unavailable
-         * Wrapped in try-catch to handle error relate to DB
-         */
+        //6
         try {
             appointmentRepo.save(appointment);
         }
         catch (DataIntegrityViolationException dive) {
-            // this will happen if another user booked the same slot at the same time
-            throw new RuntimeException("Slot is already booked by another customer.");
+            throw new SlotConflictException("Slot " + slotId + " hit a DB constraint. Retrying... ");
         }
         return appointment;
+    }
+
+    // Recover wil be called only when all retry attempts for slotConfliction are done
+    @Recover
+    public Appointment recoverFromSlotConflict(
+            SlotConflictException exception, 
+            Long customerId, Long serviceId, Long slotId, String notes) {
+        throw new RuntimeException("Slot " + slotId + " could not be booked after multiple attempts." +
+                                    " Please select a different time slot.");
     }
 
     /**
@@ -110,15 +125,15 @@ public class AppointmentService {
      */
     @Transactional
     public void cancelAppointment(Long appointmentId) {
-        // 1. find appointment
+        // 1
         Appointment appointment = appointmentRepo.findById(appointmentId)
             .orElseThrow(() -> new RuntimeException("Appointment not found"));
         
-        // 2. check status to prevent double canceling
+        // 2
         if ("CANCELLED".equalsIgnoreCase(appointment.getStatus())) 
                 throw new RuntimeException("Appointment is already cancelled.");
         
-        // 3 + 4: update appointment and mark it available
+        // 3 + 4
         appointmentRepo.updateStatus(appointmentId, "CANCELLED");
         availSlotRepo.markSlotAvailable(appointment.getSlotId());
     }
