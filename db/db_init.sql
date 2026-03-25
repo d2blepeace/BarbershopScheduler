@@ -1,5 +1,6 @@
 CREATE DATABASE barbershop_db;
 USE barbershop_db;
+ALTER TABLE appointments DROP INDEX uq_slot;
 
 CREATE TABLE services (
     service_id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -26,7 +27,6 @@ CREATE TABLE appointments (
     status VARCHAR(20) NOT NULL,
     booked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     notes VARCHAR(500),
-    CONSTRAINT uq_slot UNIQUE (slot_id)
 );
 
 INSERT INTO services (service_name, duration, price, type)

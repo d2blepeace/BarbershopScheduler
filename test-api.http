@@ -16,8 +16,8 @@ Content-Type: application/json
 {
   "customerId": 1,
   "serviceId": 1,
-  "slotId": 1,
-  "notes": "First booking test"
+  "slotId": 3,
+  "notes": "Booking test"
 }
 
 ###
@@ -30,4 +30,4 @@ GET http://localhost:8080/appointments
 ###
 
 ### Cancel appointment (replace 1 with actual ID)
-PUT http://localhost:8080/appointments/1/cancel
+PUT http://localhost:8080/appointments/27/cancel

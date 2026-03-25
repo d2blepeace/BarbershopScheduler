@@ -3,7 +3,6 @@ package edu.sjsu.cmpe172.barbershop.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -96,13 +95,8 @@ public class AppointmentService {
         appointment.setBookedAt(LocalDateTime.now());
         appointment.setNotes(notes);
 
-        //6
-        try {
-            appointmentRepo.save(appointment);
-        }
-        catch (DataIntegrityViolationException dive) {
-            throw new SlotConflictException("Slot " + slotId + " hit a DB constraint. Retrying... ");
-        }
+        //6 save the appointment info
+        appointmentRepo.save(appointment);
         return appointment;
     }
 
