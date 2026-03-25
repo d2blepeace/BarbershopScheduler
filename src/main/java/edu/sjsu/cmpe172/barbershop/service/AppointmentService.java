@@ -3,14 +3,10 @@ package edu.sjsu.cmpe172.barbershop.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Recover;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
-import edu.sjsu.cmpe172.barbershop.exception.SlotConflictException;
 import edu.sjsu.cmpe172.barbershop.exception.SlotUnavailableException;
 import edu.sjsu.cmpe172.barbershop.model.Appointment;
 import edu.sjsu.cmpe172.barbershop.model.AvailabilitySlot;
@@ -59,11 +55,6 @@ public class AppointmentService {
      * 6. Save appoinment info                                                          - CHECKD
      * @Transactional ensure all steps above succeed or fail together, if fails, roll back
      */
-    @Retryable(
-    retryFor = SlotConflictException.class,
-    maxAttempts = 3,
-    backoff = @Backoff(delay = 100, multiplier = 2)
-    )
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public Appointment createAppointment(
             Long customerId, Long serviceId, 
@@ -98,15 +89,6 @@ public class AppointmentService {
         //6 save the appointment info
         appointmentRepo.save(appointment);
         return appointment;
-    }
-
-    // Recover wil be called only when all retry attempts for slotConfliction are done
-    @Recover
-    public Appointment recoverFromSlotConflict(
-            SlotConflictException exception, 
-            Long customerId, Long serviceId, Long slotId, String notes) {
-        throw new RuntimeException("Slot " + slotId + " could not be booked after multiple attempts." +
-                                    " Please select a different time slot.");
     }
 
     /**
