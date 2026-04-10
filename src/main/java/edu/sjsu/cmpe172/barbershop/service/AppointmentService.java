@@ -34,13 +34,16 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepo;
     private final AvailabilitySlotRepository availSlotRepo;
     private final ServiceRepository serviceRepo;
+    private final NotificationClient notificationClient;
 
     public AppointmentService(AppointmentRepository appointmentRepo, 
             AvailabilitySlotRepository availSlotRepo, 
-            ServiceRepository serviceRepo) {
+            ServiceRepository serviceRepo,
+            NotificationClient notificationClient) {
         this.appointmentRepo = appointmentRepo;
         this.availSlotRepo = availSlotRepo;
         this.serviceRepo = serviceRepo;
+        this.notificationClient = notificationClient;
     }
 
     /**
@@ -53,8 +56,9 @@ public class AppointmentService {
      * 4. Claim the slot using conditional update                                       -CHECKED
      *    -> ensures only one transaction can successfully reserve the slot
      * 5. Create appointment object                                                     -CHECKED
-     * 6. Save appoinment info                                                          - CHECKD
+     * 6. Save appoinment info                                                          -CHECKD
      * @Transactional ensure all steps above succeed or fail together, if fails, roll back
+     * 7. Send notification to MockNotificationController               
      */
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public Appointment createAppointment(
@@ -89,6 +93,10 @@ public class AppointmentService {
 
         //6 save the appointment info
         appointmentRepo.save(appointment);
+
+        // 7 send notification
+        notificationClient.sendBookingConfirmation(appointment);
+        
         return appointment;
     }
 
