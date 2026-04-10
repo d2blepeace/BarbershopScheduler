@@ -22,11 +22,12 @@ import edu.sjsu.cmpe172.barbershop.repository.ServiceRepository;
  *  - Enforce business rule
  *  - coordinate multiple repo
  *  - ensure data consistent
+ *  - send notification to external service after a successful booking
  * 
  *  Create appointment with retry for concurrency conflict
  *  Retry fires only foir slot conflcit
 
- * Flow: Controller -> AppointmentService -> Repo + Database
+ * Flow: Controller -> AppointmentService -> Repo + Database -> NotificationCLient -> MockNotificationController
  */
 @Service
 public class AppointmentService {
