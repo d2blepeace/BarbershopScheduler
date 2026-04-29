@@ -30,3 +30,17 @@ GET http://localhost:8080/health
 
 ### Booking metrics
 GET http://localhost:8080/metrics/bookings
+
+### Test for M6
+POST http://localhost:8080/appointments
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "serviceId": 1,
+  "slotId": 1,
+  "notes": "M6 test booking"
+}
+
+### cancel test
+PUT http://localhost:8080/appointments/29/cancel

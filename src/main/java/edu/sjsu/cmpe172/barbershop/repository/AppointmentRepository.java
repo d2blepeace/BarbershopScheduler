@@ -1,10 +1,14 @@
 package edu.sjsu.cmpe172.barbershop.repository;
 
+import java.sql.PreparedStatement;
 import java.sql.Timestamp;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.lang.NonNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -61,16 +65,27 @@ public class AppointmentRepository {
             (customer_id, provider_id, service_id, slot_id, status, booked_at, notes)
             VALUES (?, ?, ?, ?, ?, ?, ?)            
             """;
-        return jdbcTemplate.update(
-            sql, 
-            appointment.getCustomerId(),
-            appointment.getProviderId(),
-            appointment.getServiceId(),
-            appointment.getSlotId(),
-            appointment.getStatus(),
-            appointment.getBookedAt(),
-            appointment.getNotes()
-        );
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        int rows = jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setLong(1, appointment.getCustomerId());
+                ps.setLong(2, appointment.getProviderId());
+                ps.setLong(3, appointment.getServiceId());
+                ps.setLong(4, appointment.getSlotId());
+                ps.setString(5, appointment.getStatus());
+                ps.setTimestamp(6, Timestamp.valueOf(appointment.getBookedAt()));
+                ps.setString(7, appointment.getNotes());
+                return ps;
+            }, keyHolder);
+        
+        // Set the generated ID back on the appointment object
+        if (keyHolder.getKey() != null) {
+            appointment.setAppointmentId(keyHolder.getKey().longValue());
+        }
+
+        return rows;
     }
 
     /**
