@@ -43,4 +43,4 @@ Content-Type: application/json
 }
 
 ### cancel test
-PUT http://localhost:8080/appointments/29/cancel
+PUT http://localhost:8080/appointments/32/cancel

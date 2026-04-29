@@ -78,18 +78,32 @@ public class AppointmentService {
         try {
             // 1
             AvailabilitySlot slot = availSlotRepo.findByIdForUpdate(slotId)
-                .orElseThrow(() -> new RuntimeException("Slot not found"));
+                .orElseThrow(() -> {
+                    log.error("[BOOKING] Slot {} not found in database.", slotId);
+                    return new RuntimeException("Slot not found");
+                });
 
             // 2
-            if (!slot.isAvailable()) throw new SlotUnavailableException("Slot " + slotId + " is already booked.");
+            if (!slot.isAvailable()) {
+                log.warn("[BOOKING] Slot {} is already booked. Rejecting request for customer {}.", 
+                        slotId, customerId);
+                metricsService.recordFailure();
+                throw new SlotUnavailableException("Slot " + slotId + " is already booked.");
+            }
             
             // 3
             edu.sjsu.cmpe172.barbershop.model.Service service = serviceRepo.findById(serviceId)
-                .orElseThrow(() -> new RuntimeException("Service not found"));
+                .orElseThrow(() -> {
+                    log.error("[BOOKING] Service {} not found.", serviceId);
+                    return new RuntimeException("Service not found");
+                });
 
             // 4
             int rowsUpdated = availSlotRepo.markSlotUnavailable(slotId);
             if (rowsUpdated == 0) {
+                log.warn("[BOOKING] Slot {} was claimed by another transaction. Rejecting customer {}.", 
+                        slotId, customerId);
+                metricsService.recordFailure();
                 throw new SlotUnavailableException("Slot " + slotId + " was already claimed.");
             }
             
