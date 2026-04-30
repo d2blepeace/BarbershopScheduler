@@ -28,11 +28,17 @@ CREATE TABLE appointments (
     booked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     notes VARCHAR(500),
 );
+DELETE FROM services;
 
-INSERT INTO services (service_name, duration, price, type)
-VALUES
-('Haircut', 30, 35.00, 'Hair'),
-('Beard Trim', 20, 20.00, 'Hair');
+INSERT INTO services (service_name, duration, price, type) VALUES
+('Hair cut',                   30,  35.00, 'Hair'),
+('Women hair cut & Styling',   55,  50.00, 'Hair'),
+('Men hair cut & Shaving',     45,  50.00, 'Hair'),
+('Women hair cut & Color',    120, 150.00, 'Hair'),
+('Men hair cut & Beard trim',  60,  70.00, 'Hair'),
+('Quick nail service',         30,  50.00, 'Nail'),
+('Kid hair cut',               30,  20.00, 'Hair'),
+('Nail manicure & Coloring',   60, 100.00, 'Nail');
 
 INSERT INTO availability_slots (provider_id, date, time, is_available)
 VALUES

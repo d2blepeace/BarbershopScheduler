@@ -8,6 +8,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/book" element={<BookAppointment />} />
+        <Route path="/book/slots/:serviceId" element={<div className="p-10 text-white">Slot selection — coming next</div>} />
       </Routes>
     </BrowserRouter>
   )
