@@ -24,7 +24,7 @@ export const api = {
     getProviders: () => request('/providers'),
 
     //Slots
-    getSlots: (providerId, date) => request('/slots?providerId=${providerId}&date=${date}'),
+    getSlots: (providerId, date) => request(`/slots?providerId=${providerId}&date=${date}`),
 
     // Appointments
     bookAppointment: (data) =>
