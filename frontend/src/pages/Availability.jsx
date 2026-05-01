@@ -84,7 +84,7 @@ export default function Availability() {
 
                     <div className="mb-10 grid grid-cols-2 gap-6 md:grid-cols-4">
                         {providers.map(p => {
-                            const disabled = !p.isActive
+                            const disabled = !p.active
                             const selected = selectedProvider?.providerId === p.providerId
                             return (
                                 <button
