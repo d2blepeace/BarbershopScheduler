@@ -77,7 +77,7 @@ export default function Availability() {
                         >
                             ←
                         </button>
-                        <h2 className="font-niagara text-center text-4xl text-brand-gold">
+                        <h2 className="font-niagara text-center text-6xl text-brand-gold">
                             Select a team member
                         </h2>
                     </div>
@@ -119,7 +119,7 @@ export default function Availability() {
                     {selectedProvider && (
                         <>
                             <hr className="mb-8 border-brand-gold/60" />
-                            <h2 className="font-niagara mb-8 text-center text-4xl text-brand-gold">
+                            <h2 className="font-niagara mb-8 text-center text-6xl text-brand-gold">
                                 Select date and time
                             </h2>
 
@@ -160,21 +160,22 @@ export default function Availability() {
 
                             {/* Total + Confirm */}
                             {selectedSlot && (
-                                <div className="mt-10 text-center">
-                                    <p className="mb-4 text-2xl text-white">
-                                        Total: <span className="text-brand-gold">{service.serviceName}</span> - ${service.price}
-                                    </p>
-                                    <button
-                                        onClick={handleConfirm}
-                                        disabled={booking}
-                                        className="font-niagara cursor-pointer rounded-lg border-2 border-brand-gold bg-black px-16 py-3 text-3xl tracking-wider text-brand-gold transition-colors
-                                                    hover:border-white hover:bg-black hover:text-white
-                                                    active:border-brand-gold active:bg-brand-gold active:text-black
-                                                    disabled:opacity-50"
-                                    >
-                                        {booking ? 'Booking...' : 'Confirm'}
-                                    </button>
-                                </div>
+                            <div className="mt-10 text-center">
+                                <p className="mb-4 text-2xl text-white">
+                                <span className="font-niagara text-5xl text-brand-gold">Total: </span>
+                                {service.serviceName} - ${service.price}
+                                </p>
+                                <button
+                                onClick={handleConfirm}
+                                disabled={booking}
+                                className="font-niagara cursor-pointer rounded-lg border-2 border-brand-gold bg-black px-24 py-5 text-5xl tracking-wider text-brand-gold transition-colors
+                                            hover:border-white hover:bg-black hover:text-white
+                                            active:border-brand-gold active:bg-brand-gold active:text-black
+                                            disabled:opacity-50"
+                                >
+                                {booking ? 'Booking...' : 'Confirm'}
+                                </button>
+                            </div>
                             )}
                         </>
                     )}
