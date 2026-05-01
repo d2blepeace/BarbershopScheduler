@@ -8,7 +8,7 @@ async function request(path, options = {}) {
 
     if (!response.ok) {
         const error = await response.text() 
-            throw new Error('API error ${response.status}: ${error}')
+            throw new Error(`API error ${response.status}: ${error}`)
     }
 
     // Some endpoints return to body (204)
@@ -20,12 +20,12 @@ export const api = {
     //Services
     getServices: () => request('/services'),
 
+    //Providers
+    getProviders: () => request('/providers'),
+
     //Slots
-    getSlots: (params) => {
-        const query = new URLSearchParams(params).toString()
-        return request(`/slots?${query}`)
-    },
-    
+    getSlots: (providerId, date) => request('/slots?providerId=${providerId}&date=${date}'),
+
     // Appointments
     bookAppointment: (data) =>
         request('/appointments', {
