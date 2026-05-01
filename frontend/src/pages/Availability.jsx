@@ -4,6 +4,12 @@ import Navbar from '../components/Navbar.jsx'
 import Calendar from '../components/Calendar.jsx'
 import { api } from '../services/api.jsx'
 
+import luneImg from '../assets/image/lune.jpg'
+import gustaveImg from '../assets/image/gustave.jpg'
+import maelleImg from '../assets/image/maelle.jpg'
+import monocoImg from '../assets/image/monoco.jpg'
+import versoImg from '../assets/image/verso.jpg'
+import scielImg from '../assets/image/sciel.jpg'
 import backArrow from '../assets/image/back-button.png'
 
 export default function Availability() {
@@ -18,6 +24,16 @@ export default function Availability() {
     const [loading, setLoading] = useState(true)
     const [booking, setBooking] = useState(false)
     const [error, setError] = useState(null)
+
+    // provider images
+    const providerImages = {
+        'Lune': luneImg,
+        'Gustave': gustaveImg,
+        'Maelle': maelleImg,
+        'Monoco': monocoImg,
+        'Verso': versoImg,
+        'Sciel': scielImg,
+    }
 
     // Load providers and identify the chosen service from the URL
     useEffect(() => {
@@ -47,7 +63,7 @@ export default function Availability() {
         try {
             await api.bookAppointment({
                 // hardcoded for demo (no login system yet)
-                customerId: 1,                          
+                customerId: 1,
                 serviceId: service.serviceId,
                 slotId: selectedSlot.slotId,
                 notes: '',
@@ -75,7 +91,7 @@ export default function Availability() {
                             onClick={() => navigate(-1)}
                             className="absolute left-0 top-0 cursor-pointer text-3xl text-brand-gold hover:text-white"
                         >
-                            ←
+                            <img src={backArrow} alt="Back to services" className="h-12 w-12" />
                         </button>
                         <h2 className="font-niagara text-center text-6xl text-brand-gold">
                             Select a team member
@@ -94,14 +110,16 @@ export default function Availability() {
                                     className={`
                                             flex flex-col items-center gap-3 rounded-xl border-2 p-6 transition-colors
                                             ${disabled
-                                                                    ? 'cursor-not-allowed border-brand-gold/30 opacity-40'
-                                                                    : 'cursor-pointer border-brand-gold hover:border-white hover:bg-black/70'}
+                                            ? 'cursor-not-allowed border-brand-gold/30 opacity-40'
+                                            : 'cursor-pointer border-brand-gold hover:border-white hover:bg-black/70'}
                                             ${selected ? '!border-brand-gold !bg-brand-gold' : ''}
                                             `}
                                 >
-                                    <div className="flex h-24 w-24 items-center justify-center rounded-full bg-pink-400 font-bold text-3xl text-white">
-                                        {p.name[0]}
-                                    </div>
+                                    <img
+                                        src={providerImages[p.name]}
+                                        alt={p.name}
+                                        className="h-24 w-24 rounded-full object-cover object-top"
+                                    />
                                     <div className="text-center">
                                         <div className={`font-niagara text-2xl ${selected ? 'text-black' : 'text-brand-gold'}`}>
                                             {p.name}
@@ -145,8 +163,8 @@ export default function Availability() {
                                                         key={slot.slotId}
                                                         onClick={() => setSelectedSlot(slot)}
                                                         className={`cursor-pointer rounded-lg border-2 px-6 py-3 text-xl transition-colors${selected
-                                                                ? '!border-brand-gold !bg-brand-gold !text-black'
-                                                                : 'border-brand-gold bg-black text-white hover:border-white hover:bg-black/70'}
+                                                            ? '!border-brand-gold !bg-brand-gold !text-black'
+                                                            : 'border-brand-gold bg-black text-white hover:border-white hover:bg-black/70'}
                             `}
                                                     >
                                                         {formatTime(slot.time)}
@@ -160,22 +178,22 @@ export default function Availability() {
 
                             {/* Total + Confirm */}
                             {selectedSlot && (
-                            <div className="mt-10 text-center">
-                                <p className="mb-4 text-2xl text-white">
-                                <span className="font-niagara text-5xl text-brand-gold">Total: </span>
-                                {service.serviceName} - ${service.price}
-                                </p>
-                                <button
-                                onClick={handleConfirm}
-                                disabled={booking}
-                                className="font-niagara cursor-pointer rounded-lg border-2 border-brand-gold bg-black px-24 py-5 text-5xl tracking-wider text-brand-gold transition-colors
+                                <div className="mt-10 text-center">
+                                    <p className="mb-4 text-2xl text-white">
+                                        <span className="font-niagara text-5xl text-brand-gold">Total: </span>
+                                        {service.serviceName} - ${service.price}
+                                    </p>
+                                    <button
+                                        onClick={handleConfirm}
+                                        disabled={booking}
+                                        className="font-niagara cursor-pointer rounded-lg border-2 border-brand-gold bg-black px-24 py-5 text-5xl tracking-wider text-brand-gold transition-colors
                                             hover:border-white hover:bg-black hover:text-white
                                             active:border-brand-gold active:bg-brand-gold active:text-black
                                             disabled:opacity-50"
-                                >
-                                {booking ? 'Booking...' : 'Confirm'}
-                                </button>
-                            </div>
+                                    >
+                                        {booking ? 'Booking...' : 'Confirm'}
+                                    </button>
+                                </div>
                             )}
                         </>
                     )}
