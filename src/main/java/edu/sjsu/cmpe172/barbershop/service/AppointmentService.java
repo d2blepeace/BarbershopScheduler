@@ -15,6 +15,8 @@ import edu.sjsu.cmpe172.barbershop.model.AvailabilitySlot;
 import edu.sjsu.cmpe172.barbershop.repository.AppointmentRepository;
 import edu.sjsu.cmpe172.barbershop.repository.AvailabilitySlotRepository;
 import edu.sjsu.cmpe172.barbershop.repository.ServiceRepository;
+import edu.sjsu.cmpe172.barbershop.model.Provider;
+
 
 /**
  * Service layer for Appointment Logic
