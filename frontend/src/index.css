@@ -8,7 +8,7 @@
 
 @font-face {
   font-family: 'Miama';
-  src: url('frontend/public/font/Miama.tff') format('truetype');
+  src: url('frontend/public/font/Miama.ttf') format('truetype');
   font-display: swap;
 }
 
