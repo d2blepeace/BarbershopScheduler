@@ -52,12 +52,14 @@ export default function BookAppointment() {
     const handleSelectService = (serviceId) => {
         navigate(`/book/slots/${serviceId}`)
     }
+    
     return (
         <div className="min-h-screen bg-black text-white">
         <Navbar />
 
         <main className="px-6 py-10">
             <div className="mx-auto max-w-6xl rounded-lg border border-brand-gold p-10">
+
             <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full border-2 border-brand-gold text-center text-[10px] leading-tight text-brand-gold">
                 Vintage Razor<br />Barber &amp; Salon<br />Logo
             </div>
@@ -76,46 +78,66 @@ export default function BookAppointment() {
             </div>
 
             <hr className="mb-8 border-brand-gold/60" />
-
+            
+            {/* Services heading */}
             <h2 className="font-niagara mb-10 text-center text-6xl tracking-wider text-brand-gold">
                 Services
             </h2>
 
             {loading && <p className="text-center">Loading services...</p>}
             {error && <p className="text-center text-red-400">Failed to load: {error}</p>}
-
+            
+            {/* Service buttons section */}
             {!loading && !error && (
-                <div className="grid gap-6 md:grid-cols-2">
-                {services.map((service) => {
-                    const img = serviceImages[service.serviceName] || haircutImg
-                    return (
-                    <button
-                        key={service.serviceId}
-                        onClick={() => handleSelectService(service.serviceId)}
-                        className="group flex cursor-pointer items-center gap-4 rounded-xl border-2 border-brand-gold bg-black p-3 text-left transition-colors duration-150
-                                hover:border-white hover:bg-black/70
-                                active:bg-brand-gold active:border-brand-gold active:text-black"
-                    >
-                        <img
-                        src={img}
-                        alt={service.serviceName}
-                        className="h-20 w-20 flex-shrink-0 rounded-md object-cover"
-                        />
-                        <div className="flex flex-col gap-7">
+            <div className="space-y-10">
+                {['Hair', 'Nail'].map(type => {
+                const filtered = services.filter(s => s.type === type)
 
-                        <h3 className="text-xl text-brand-gold transition-colors group-hover:text-white group-active:text-black">
-                            {service.serviceName}
-                        </h3>
+                if (filtered.length === 0) return null
+                return (
+                    <div key={type}>
+                    {/* Section header */}
+                    <h3 className="font-niagara mb-6 text-4xl tracking-wider text-brand-gold">
+                        {type === 'Hair' ? 'Hair' : 'Nail'}
+                    </h3>
 
-                        <p className="text-base text-white transition-colors group-active:text-black">
-                            {service.duration} mins | ${service.price}
-                        </p>
+                    {/* Service buttons for each type */}
+                    <div className="grid gap-6 md:grid-cols-2">
+                        {filtered.map((service) => {
+                        const img = serviceImages[service.serviceName] || haircutImg
 
-                        </div>
-                    </button>
-                    )
+                        return (
+                            <button
+                            key={service.serviceId}
+                            onClick={() => handleSelectService(service.serviceId)}
+
+                            className="group flex cursor-pointer items-center gap-4 rounded-xl border-2 border-brand-gold bg-black p-3 text-left transition-colors duration-150
+                                        hover:border-white hover:bg-black/70
+                                        active:border-brand-gold active:bg-brand-gold"
+                            >
+
+                            <img
+                                src={img}
+                                alt={service.serviceName}
+                                className="h-20 w-20 flex-shrink-0 rounded-md object-cover"
+                            />
+                            <div className="flex flex-col gap-2">
+                                <h3 className="text-xl text-brand-gold transition-colors group-hover:text-white group-active:text-black">
+                                {service.serviceName}
+                                </h3>
+
+                                <p className="text-base text-white transition-colors group-active:text-black">
+                                {service.duration} mins | ${service.price}
+                                </p>
+                            </div>
+                            </button>
+                        )
+                        })}
+                    </div>
+                    </div>
+                )
                 })}
-                </div>
+            </div>
             )}
             </div>
         </main>
