@@ -39,8 +39,10 @@ export default function Availability() {
     useEffect(() => {
         Promise.all([api.getServices(), api.getProviders()])
             .then(([services, providers]) => {
-                setProviders(providers)
+                setProviders(providers) 
+
                 const s = services.find(svc => String(svc.serviceId) === serviceId)
+
                 setService(s)
             })
             .catch(err => setError(err.message))
@@ -51,7 +53,9 @@ export default function Availability() {
     useEffect(() => {
         if (!selectedProvider || !selectedDate) return
         setSelectedSlot(null)
+
         const dateStr = formatDate(selectedDate)
+
         api.getSlots(selectedProvider.providerId, dateStr)
             .then(setSlots)
             .catch(err => setError(err.message))
@@ -60,6 +64,7 @@ export default function Availability() {
     const handleConfirm = async () => {
         if (!selectedSlot || !service) return
         setBooking(true)
+
         try {
             await api.bookAppointment({
                 // hardcoded for demo (no login system yet)
@@ -100,8 +105,13 @@ export default function Availability() {
 
                     <div className="mb-10 grid grid-cols-2 gap-6 md:grid-cols-4">
                         {providers.map(p => {
-                            const disabled = !p.active
+                            const isMatch = 
+                                (service?.type === 'Hair' && p.bio === 'Barber') ||
+                                (service?.type === 'Nail' && p.bio === 'Nail Technician')
+
+                            const disabled = !p.active || !isMatch
                             const selected = selectedProvider?.providerId === p.providerId
+                            
                             return (
                                 <button
                                     key={p.providerId}
@@ -151,9 +161,11 @@ export default function Availability() {
                                     {!selectedDate && (
                                         <p className="text-center text-gray-400">Pick a date first.</p>
                                     )}
+
                                     {selectedDate && slots.length === 0 && (
                                         <p className="text-center text-gray-400">No available slots for this date.</p>
                                     )}
+
                                     {selectedDate && slots.length > 0 && (
                                         <div className="grid grid-cols-2 gap-3">
                                             {slots.map(slot => {
@@ -165,7 +177,7 @@ export default function Availability() {
                                                         className={`cursor-pointer rounded-lg border-2 px-6 py-3 text-xl transition-colors${selected
                                                             ? '!border-brand-gold !bg-brand-gold !text-black'
                                                             : 'border-brand-gold bg-black text-white hover:border-white hover:bg-black/70'}
-                            `}
+                                                        `}
                                                     >
                                                         {formatTime(slot.time)}
                                                     </button>
