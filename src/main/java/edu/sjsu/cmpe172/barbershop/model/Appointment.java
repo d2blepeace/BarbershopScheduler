@@ -1,6 +1,8 @@
 package edu.sjsu.cmpe172.barbershop.model;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 /**
  * Represent a booking appointment of a customer:
@@ -14,19 +16,24 @@ public class Appointment {
     private Long providerId;
     private Long serviceId;
     private Long slotId;
+    private LocalDate appointmentDate;
+    private LocalTime appointmentTime;
     private String status;
     private LocalDateTime bookedAt;
     private String notes;
-   
+    
     public Appointment() {}
 
     public Appointment(Long appointmentId, Long customerId, Long providerId, Long serviceId, Long slotId, 
+        LocalDate appointmentDate, LocalTime appointmentTime,
         String status, LocalDateTime bookedAt, String notes) {
             this.appointmentId = appointmentId;
             this.customerId = customerId;
             this.providerId = providerId;
             this.serviceId = serviceId;
             this.slotId = slotId;
+            this.appointmentDate = appointmentDate;
+            this.appointmentTime = appointmentTime;
             this.status = status;
             this.bookedAt = bookedAt;
             this.notes = notes;    
@@ -47,7 +54,13 @@ public class Appointment {
 
     public Long getSlotId() {return slotId; }
     public void setSlotId(Long slotId) {this.slotId = slotId;}
+    
+    public LocalDate getAppointmentDate() { return appointmentDate; }
+    public void setAppointmentDate(LocalDate appointmentDate) { this.appointmentDate = appointmentDate; }
 
+    public LocalTime getAppointmentTime() { return appointmentTime; }
+    public void setAppointmentTime(LocalTime appointmentTime) { this.appointmentTime = appointmentTime; }
+    
     public String getStatus() {return status;}
     public void setStatus(String status) {this.status = status;}
 

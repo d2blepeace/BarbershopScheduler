@@ -115,6 +115,8 @@ public class AppointmentService {
             appointment.setProviderId(slot.getProviderId());
             appointment.setServiceId(service.getServiceId());
             appointment.setSlotId(slot.getSlotId());
+            appointment.setAppointmentDate(slot.getDate());
+            appointment.setAppointmentTime(slot.getTime());
             appointment.setStatus("CONFIRMED");
             appointment.setBookedAt(LocalDateTime.now());
             appointment.setNotes(notes);

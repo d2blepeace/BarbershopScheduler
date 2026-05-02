@@ -39,6 +39,8 @@ public class AppointmentRepository {
         appointment.setProviderId(rs.getLong("provider_id"));
         appointment.setServiceId(rs.getLong("service_id"));
         appointment.setSlotId(rs.getLong("slot_id"));
+        appointment.setAppointmentDate(rs.getDate("appointment_date").toLocalDate());
+        appointment.setAppointmentTime(rs.getTime("appointment_time").toLocalTime());
         appointment.setStatus(rs.getString("status"));
 
         Timestamp bookedAt = rs.getTimestamp("booked_at");
@@ -60,11 +62,11 @@ public class AppointmentRepository {
      *  - 0 if failed
      */
     public int save(Appointment appointment) {
-        String sql  = """
+        String sql = """
             INSERT INTO appointments
-            (customer_id, provider_id, service_id, slot_id, status, booked_at, notes)
-            VALUES (?, ?, ?, ?, ?, ?, ?)            
-            """;
+            (customer_id, provider_id, service_id, slot_id, appointment_date, appointment_time, status, booked_at, notes)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """;
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -74,9 +76,11 @@ public class AppointmentRepository {
                 ps.setLong(2, appointment.getProviderId());
                 ps.setLong(3, appointment.getServiceId());
                 ps.setLong(4, appointment.getSlotId());
-                ps.setString(5, appointment.getStatus());
-                ps.setTimestamp(6, Timestamp.valueOf(appointment.getBookedAt()));
-                ps.setString(7, appointment.getNotes());
+                ps.setDate(5, java.sql.Date.valueOf(appointment.getAppointmentDate()));
+                ps.setTime(6, java.sql.Time.valueOf(appointment.getAppointmentTime()));
+                ps.setString(7, appointment.getStatus());
+                ps.setTimestamp(8, Timestamp.valueOf(appointment.getBookedAt()));
+                ps.setString(9, appointment.getNotes());
                 return ps;
             }, keyHolder);
         

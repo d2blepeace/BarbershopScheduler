@@ -44,9 +44,9 @@ export default function Calendar({selectedDate, onSelectDate}) {
         </div>
 
         <div className="mb-2 grid grid-cols-7 rounded-md border border-brand-gold py-2">
-            {DAYS.map(d => (
-            <div key={d} className="text-center text-sm text-brand-gold">{d}</div>
-            ))}
+        {DAYS.map(d => (
+            <div key={d} className="font-niagara text-center text-2xl text-brand-gold">{d}</div>
+        ))}
         </div>
 
         <div className="grid grid-cols-7 gap-1">

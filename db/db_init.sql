@@ -35,6 +35,8 @@ CREATE TABLE appointments (
     provider_id    BIGINT      NOT NULL,
     service_id     BIGINT      NOT NULL,
     slot_id        BIGINT      NOT NULL,
+    appointment_date DATE      NOT NULL,
+    appointment_time TIME      NOT NULL,
     status         VARCHAR(20) NOT NULL,
     booked_at      TIMESTAMP   DEFAULT CURRENT_TIMESTAMP,
     notes          VARCHAR(500)

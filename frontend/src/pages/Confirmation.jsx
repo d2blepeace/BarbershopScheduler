@@ -65,7 +65,7 @@ export default function Confirmation() {
 
             {/* Thank you card */}
             <div className="mb-10 rounded-lg border-2 border-white p-12 text-center">
-                <p style={{ fontFamily: 'Miama, cursive' }} className="text-7xl text-white">
+                <p style={{ fontFamily: 'Miama, cursive' }} className="text-9xl text-white">
                 Thank you!
                 </p>
             </div>
@@ -75,28 +75,28 @@ export default function Confirmation() {
             {/* Booking details */}
             <div className="mb-10 space-y-6 text-center">
                 <div>
-                <h2 className="font-niagara text-2xl text-brand-gold">Appointment</h2>
+                <h2 className="font-niagara text-4xl text-brand-gold">Appointment</h2>
                 <p>#{appointment.appointmentId}</p>
                 </div>
 
                 <div>
-                <h2 className="font-niagara text-2xl text-brand-gold">Service</h2>
+                <h2 className="font-niagara text-4xl text-brand-gold">Service</h2>
                 <p>{service.serviceName}</p>
                 <p>{service.duration} mins | ${service.price}</p>
                 </div>
 
                 <div>
-                <h2 className="font-niagara text-2xl text-brand-gold">Date/Time</h2>
+                <h2 className="font-niagara text-4xl text-brand-gold">Date/Time</h2>
                 <p>{formatDate(slot.date)} - {slot.time.substring(0, 5)}</p>
                 </div>
 
                 <div>
-                <h2 className="font-niagara text-2xl text-brand-gold">Team member</h2>
+                <h2 className="font-niagara text-4xl text-brand-gold">Team member</h2>
                 <p>{provider.name}</p>
                 </div>
 
                 <div>
-                <h2 className="font-niagara text-2xl text-brand-gold">Customer</h2>
+                <h2 className="font-niagara text-4xl text-brand-gold">Customer</h2>
                 <p>{customerName}</p>
                 </div>
             </div>
@@ -105,7 +105,7 @@ export default function Confirmation() {
             <div className="flex justify-between gap-4">
                 <button
                 onClick={handleChange}
-                className="font-niagara cursor-pointer rounded-lg border-2 border-brand-gold bg-black px-12 py-3 text-3xl tracking-wider text-brand-gold transition-colors
+                className="font-niagara cursor-pointer rounded-lg border-2 border-brand-gold bg-black px-12 py-3 text-4xl tracking-wider text-brand-gold transition-colors
                             hover:border-white hover:bg-black hover:text-white
                             active:border-brand-gold active:bg-brand-gold active:text-black"
                 >
@@ -114,7 +114,7 @@ export default function Confirmation() {
                 <button
                 onClick={handleCancelConfirm}
                 disabled={cancelling}
-                className="font-niagara cursor-pointer rounded-lg border-2 border-white bg-black px-12 py-3 text-3xl tracking-wider text-white transition-colors
+                className="font-niagara cursor-pointer rounded-lg border-2 border-white bg-black px-12 py-3 text-4xl tracking-wider text-white transition-colors
                             hover:border-brand-gold hover:text-brand-gold
                             active:bg-white active:text-black
                             disabled:opacity-50"
