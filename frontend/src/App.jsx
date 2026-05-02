@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import BookAppointment from './pages/BookAppointment'
 import Availability from './pages/Availability'
+import Confirmation from './pages/Confirmation'
 
 export default function App() {
   return (
@@ -10,7 +11,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/book" element={<BookAppointment />} />
         <Route path="/book/slots/:serviceId" element={<Availability />} />
-        <Route path="/confirmation" element={<div className="min-h-screen bg-black p-10 text-white">Booking confirmed — confirmation page coming next</div>} />
+        <Route path="/confirmation" element={<Confirmation />} />
       </Routes>
     </BrowserRouter>
   )

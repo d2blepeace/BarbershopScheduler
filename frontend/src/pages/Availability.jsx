@@ -201,13 +201,13 @@ export default function Availability() {
                                 <div className="mt-10 text-center">
                                     {/*Notes*/}
                                     <div className="mx-auto mb-8 max-w-2xl text-left">
-                                        <label className="font-niagara mb-2 block text-2xl text-brand-gold">
+                                        <label className="font-niagara mb-2 block text-4xl text-brand-gold">
                                             Notes (optional)
                                         </label>
                                         <textarea
                                             value={notes}
                                             onChange={(e) => setNotes(e.target.value)}
-                                            placeholder="Any special requests or preferences?"
+                                            placeholder="Any special requests or preferences for the team member?"
                                             rows={3}
                                             className="w-full rounded-lg border-2 border-brand-gold bg-black p-3 text-white placeholder-white/40 focus:border-white focus:outline-none"
                                         />
