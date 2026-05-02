@@ -24,6 +24,7 @@ export default function Availability() {
     const [loading, setLoading] = useState(true)
     const [booking, setBooking] = useState(false)
     const [error, setError] = useState(null)
+    const [notes, setNotes] = useState('')
 
     // provider images
     const providerImages = {
@@ -66,14 +67,22 @@ export default function Availability() {
         setBooking(true)
 
         try {
-            await api.bookAppointment({
+            const appointment = await api.bookAppointment({
                 // hardcoded for demo (no login system yet)
                 customerId: 1,
                 serviceId: service.serviceId,
                 slotId: selectedSlot.slotId,
-                notes: '',
+                notes: notes,
             })
-            navigate('/confirmation')
+            navigate('/confirmation', {
+                state: {
+                    appointment,
+                    service,
+                    provider: selectedProvider,
+                    slot: selectedSlot,
+                    customerName: 'Jane Doe'
+                }
+            })
         } catch (err) {
             alert('Booking failed: ' + err.message)
         } finally {
@@ -188,9 +197,22 @@ export default function Availability() {
                                 </div>
                             </div>
 
-                            {/* Total + Confirm */}
                             {selectedSlot && (
                                 <div className="mt-10 text-center">
+                                    {/*Notes*/}
+                                    <div className="mx-auto mb-8 max-w-2xl text-left">
+                                        <label className="font-niagara mb-2 block text-2xl text-brand-gold">
+                                            Notes (optional)
+                                        </label>
+                                        <textarea
+                                            value={notes}
+                                            onChange={(e) => setNotes(e.target.value)}
+                                            placeholder="Any special requests or preferences?"
+                                            rows={3}
+                                            className="w-full rounded-lg border-2 border-brand-gold bg-black p-3 text-white placeholder-white/40 focus:border-white focus:outline-none"
+                                        />
+                                    </div>
+                                    {/* Total & confrim */}
                                     <p className="mb-4 text-2xl text-white">
                                         <span className="font-niagara text-5xl text-brand-gold">Total: </span>
                                         {service.serviceName} - ${service.price}

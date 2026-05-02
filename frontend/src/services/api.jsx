@@ -34,5 +34,5 @@ export const api = {
         }),
 
     cancelAppointment: (id) =>
-        request(`/appointments/${id}`, { method: 'DELETE' }),
+        request(`/appointments/${id}/cancel`, { method: 'PUT' }),
 }
