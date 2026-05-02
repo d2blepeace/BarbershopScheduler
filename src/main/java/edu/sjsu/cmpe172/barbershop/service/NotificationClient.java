@@ -35,6 +35,8 @@ public class NotificationClient {
             appointment.getCustomerId(),
             appointment.getProviderId(),
             appointment.getSlotId(),
+            appointment.getAppointmentDate(),
+            appointment.getAppointmentTime(),
             appointment.getStatus(),
             appointment.getNotes()
         );

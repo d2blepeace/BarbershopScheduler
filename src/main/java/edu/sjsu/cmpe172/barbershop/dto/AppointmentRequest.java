@@ -9,7 +9,6 @@ public class AppointmentRequest {
     private Long serviceId;
     private Long slotId;
     private String notes;
-
     //Getters and setters
     public Long getCustomerId() {return customerId;}
     public void setCustomerId(Long customerId) {this.customerId = customerId;}

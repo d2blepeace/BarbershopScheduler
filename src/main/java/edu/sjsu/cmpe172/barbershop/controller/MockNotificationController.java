@@ -34,6 +34,8 @@ public class MockNotificationController {
         log.info("  Customer ID     : {}", request.getCustomerId());
         log.info("  Provider ID     : {}", request.getProviderId());
         log.info("  Slot ID         : {}", request.getSlotId());
+        log.info("  Date            : {}", request.getAppointmentDate());
+        log.info("  Time            : {}", request.getAppointmentTime());
         log.info("  Status          : {}", request.getStatus());
         log.info("  Notes           : {}", request.getNotes());
         log.info("[MOCK NOTIFICATION SERVICE] Confirmation sent to customer {}.", request.getCustomerId());
