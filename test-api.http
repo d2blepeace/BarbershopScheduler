@@ -1,46 +1,218 @@
+###  VINTAGE RAZOR BARBERSHOP — API TEST SUITE
+###  CMPE 172 Term Project, Spring 2026
+###
+###  USAGE
+###    VS Code:    install the "REST Client" extension, then click
+###                "Send Request" above any request block below.
+###    IntelliJ:   built-in HTTP client (Run gutter icon).
+###
+###  ORDER
+###    Sections are grouped by purpose. Run from top to bottom on a
+###    fresh DB (db/db_init.sql) for the most predictable results.
+###
+###  DATES
+###    The seed script generates 14 days of slots starting tomorrow.
+###    Replace dates below with a value within that window — or first
+###    call GET /slots and copy a real one from the response.
+
+@host = http://localhost:8080
+
+### SANITY CHECKS
+###  Verify the app is up and reachable
+
 ### Homepage
-GET http://localhost:8080/
+GET {{host}}/
 
-### The list of all services
-GET http://localhost:8080/services
+### Health check 
+###     Expect: 200 OK
+GET {{host}}/health
 
-### Get slots
-GET http://localhost:8080/slots?providerId=1&date=2026-03-30
+###  BROWSE CATALOG DATA
+###  Read-only queries against seed data.
+### List all services
+###     Expect: 8 services from seed data
+GET {{host}}/services
 
-### Create appointment (BOOK)
-POST http://localhost:8080/appointments
+### List available slots — Provider 1 (Lune, Barber)
+###     Replace the date with a valid future date in your seed window.
+GET {{host}}/slots?providerId=1&date=2026-05-09
+
+### List available slots — Provider 3 (Maelle, Nail Tech)
+GET {{host}}/slots?providerId=3&date=2026-05-09
+
+### List slots for an INACTIVE provider (Verso, providerId=5)
+###     Expect: empty result — inactive providers have no slots seeded
+GET {{host}}/slots?providerId=5&date=2026-05-09
+
+### List slots for an out-of-range date (past or beyond 14 days)
+###     Expect: empty result
+GET {{host}}/slots?providerId=1&date=2026-01-01
+
+
+
+###  BOOKING HAPPY PATH
+###  Standard flow: see slots, book, view, cancel, re-book.
+
+### Book a new appointment
+###     Replace slotId with one returned from request above.
+POST {{host}}/appointments
 Content-Type: application/json
 
 {
   "customerId": 1,
   "serviceId": 1,
   "slotId": 3,
-  "notes": "Booking test"
+  "notes": "Standard booking test"
+}
+
+### List all appointments
+GET {{host}}/appointments
+
+### Cancel an appointment
+###     Replace the {id} below with an appointment_id from previous response
+PUT {{host}}/appointments/1/cancel
+
+### Re-book the same slot after cancellation
+POST {{host}}/appointments
+Content-Type: application/json
+
+{
+  "customerId": 2,
+  "serviceId": 1,
+  "slotId": 3,
+  "notes": "Re-booking previously cancelled slot"
 }
 
 
-### Get all appointments
-GET http://localhost:8080/appointments
+## CONCURRENCY VERIFICATION
+###  Manual race-condition test. 
+###  Do two booking simultaneously as possible (different terminals or quick double- click in VS Code). 
+### Expected outcome:
+###    - One returns 200 OK with appointment details
+###    - The other returns 409 Conflict: "Slot X is already booked."
 
-### Cancel appointment (replace 1 with actual ID)
-PUT http://localhost:8080/appointments/27/cancel
 
-### Health check
-GET http://localhost:8080/health
-
-### Booking metrics
-GET http://localhost:8080/metrics/bookings
-
-### Test for M6
-POST http://localhost:8080/appointments
+### Concurrent booking — Customer A
+POST {{host}}/appointments
 Content-Type: application/json
 
 {
   "customerId": 1,
   "serviceId": 1,
-  "slotId": 1,
-  "notes": "M6 test booking"
+  "slotId": 5,
+  "notes": "Concurrency test — Customer A"
 }
 
-### cancel test
-PUT http://localhost:8080/appointments/32/cancel
+### Concurrent booking — Customer B 
+POST {{host}}/appointments
+Content-Type: application/json
+
+{
+  "customerId": 2,
+  "serviceId": 1,
+  "slotId": 5,
+  "notes": "Concurrency test — Customer B"
+}
+
+###  EDGE CASES & ERROR HANDLING
+###  Verify the API rejects invalid input cleanly.
+
+### Book with non-existent slotId
+###     Expect: 4xx or 5xx error, NOT a silently-created appointment
+POST {{host}}/appointments
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "serviceId": 1,
+  "slotId": 99999,
+  "notes": "Should fail — slot does not exist"
+}
+
+### Book with non-existent serviceId
+###     Expect: error
+POST {{host}}/appointments
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "serviceId": 99999,
+  "slotId": 10,
+  "notes": "Should fail — service does not exist"
+}
+
+### book an already-booked slot (sequential, not concurrent)
+###     First book slotId=7 successfully...
+POST {{host}}/appointments
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "serviceId": 1,
+  "slotId": 7,
+  "notes": "First booking — should succeed"
+}
+
+### ...then try to book it again
+###     Expect: 409 Conflict
+POST {{host}}/appointments
+Content-Type: application/json
+
+{
+  "customerId": 2,
+  "serviceId": 1,
+  "slotId": 7,
+  "notes": "Second booking — should fail with 409"
+}
+
+###  Cancel a non-existent appointment
+###     Expect: 4xx error
+PUT {{host}}/appointments/99999/cancel
+
+### Cancel an already-cancelled appointment 
+###     Replace ID with one cancelled in 3.3.
+###     Expect: graceful handling, no crash, appropriate log warning
+PUT {{host}}/appointments/1/cancel
+
+
+###  SYSTEM MANAGEMENT (M6): Metrics and log inspection.
+
+### Booking metrics
+###     Expect: success count, failure count, average latency in ms.
+###     Counts should reflect everything attempted in this test run.
+GET {{host}}/metrics/bookings
+
+### Trigger a successful booking, then re-check metrics
+POST {{host}}/appointments
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "serviceId": 2,
+  "slotId": 12,
+  "notes": "M6 — drives success counter"
+}
+
+### Trigger a failed booking, then re-check metrics
+POST {{host}}/appointments
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "serviceId": 2,
+  "slotId": 99999,
+  "notes": "M6 — drives failure counter"
+}
+
+### Re-fetch metrics to confirm counters incremented
+GET {{host}}/metrics/bookings
+
+### Health check (re-run after load)
+###     Demonstrates the endpoint stays responsive under activity.
+GET {{host}}/health
+
+###  After running this suite, inspect logs/barbershop.log for:
+###    - [BOOKING] SUCCESS / [BOOKING] entries
+###    - [CANCEL]  events
+###    - [NOTIFICATION CLIENT] / [MOCK NOTIFICATION SERVICE] pairs
+###    - WARN-level entries for the conflict and edge-case requests
