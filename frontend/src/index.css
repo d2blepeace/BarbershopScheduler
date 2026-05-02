@@ -2,13 +2,13 @@
 
 @font-face {
   font-family: 'Niagara Solid';
-  src: url('/fonts/NiagaraSolid.ttf') format('truetype');
+  src: url('frontend/public/font/NiagaraSolid.ttf') format('truetype');
   font-display: swap;
 }
 
 @font-face {
   font-family: 'Miama';
-  src: url('/fonts/Miama.tff') format('truetype');
+  src: url('frontend/public/font/Miama.tff') format('truetype');
   font-display: swap;
 }
 

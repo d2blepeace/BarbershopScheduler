@@ -13,7 +13,13 @@ async function request(path, options = {}) {
 
     // Some endpoints return to body (204)
     if (response.status === 204) return null
-    return response.json()
+
+    // Try JSON first, fall back to text for endpoints that return plain strings
+    const contentType = response.headers.get('content-type') || ''
+    if (contentType.includes('application/json')) {
+        return response.json()
+    }
+    return response.text()
 }
 
 export const api = {
