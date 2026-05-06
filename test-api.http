@@ -92,7 +92,7 @@ Content-Type: application/json
 ###    - The other returns 409 Conflict: "Slot X is already booked."
 
 
-### Concurrent booking — Customer A
+### Concurrent booking: Customer A
 POST {{host}}/appointments
 Content-Type: application/json
 
@@ -103,7 +103,7 @@ Content-Type: application/json
   "notes": "Concurrency test- Customer A"
 }
 
-### Concurrent booking — Customer B 
+### Concurrent booking: Customer B 
 POST {{host}}/appointments
 Content-Type: application/json
 
@@ -126,7 +126,7 @@ Content-Type: application/json
   "customerId": 1,
   "serviceId": 1,
   "slotId": 99999,
-  "notes": "Should fail — slot does not exist"
+  "notes": "Should fail, slot does not exist"
 }
 
 ### Book with non-existent serviceId
@@ -138,7 +138,7 @@ Content-Type: application/json
   "customerId": 1,
   "serviceId": 99999,
   "slotId": 10,
-  "notes": "Should fail — service does not exist"
+  "notes": "Should fail, service does not exist"
 }
 
 ### book an already-booked slot (sequential, not concurrent)
@@ -149,8 +149,8 @@ Content-Type: application/json
 {
   "customerId": 1,
   "serviceId": 1,
-  "slotId": 7,
-  "notes": "First booking — should succeed"
+  "slotId": 10,
+  "notes": "First booking, should succeed"
 }
 
 ### ...then try to book it again
@@ -161,7 +161,7 @@ Content-Type: application/json
 {
   "customerId": 2,
   "serviceId": 1,
-  "slotId": 7,
+  "slotId": 10,
   "notes": "Second booking, should fail with 409"
 }
 
@@ -190,7 +190,7 @@ Content-Type: application/json
   "customerId": 1,
   "serviceId": 2,
   "slotId": 12,
-  "notes": "M6 — drives success counter"
+  "notes": "drives success counter"
 }
 
 ### Trigger a failed booking, then re-check metrics

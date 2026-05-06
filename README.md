@@ -132,7 +132,9 @@ Set them before running the app (see below).
 
 ## Running the Application
 
-### Backend
+### Backend 
+
+**IMPORTANT, MUST INPUT DATABASE USERNAME AND PASSWORD BEFORE EACH SESSION**
 
 **Windows (PowerShell):**
 
