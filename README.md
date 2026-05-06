@@ -224,10 +224,10 @@ Slot 52 is already booked.
 
 Four tables back the application:
 
-- **`services`** — catalog of offered services (haircut, color, manicure, etc.) with duration and price
-- **`providers`** — barbers/technicians; `is_active` flag controls visibility
-- **`availability_slots`** — pre-generated time slots per provider per day; `is_available` flips when booked
-- **`appointments`** — booking records linking customer, provider, service, and slot
+- **`services`**: catalog of offered services (haircut, color, manicure, etc.) with duration and price
+- **`providers`**: barbers/technicians; `is_active` flag controls visibility
+- **`availability_slots`**: pre-generated time slots per provider per day; `is_available` flips when booked
+- **`appointments`**: booking records linking customer, provider, service, and slot
 
 Key design points:
 
@@ -257,21 +257,6 @@ Click "Send Request" above each request block.
 ### Option 2 — React frontend (more visualize)
 
 If you've started the optional frontend (see [Running the Application](#running-the-application)), open `http://localhost:3000` and book / cancel appointments through the UI. Useful for end-to-end sanity checks.
-
-### Option 3 — `curl`
-
-```bash
-curl "http://localhost:8080/slots?providerId=1&date=2026-05-09"
-```
-
-### Concurrency test (manually)
-
-To reproduce the double-booking race condition and verify the fix:
-
-1. Open two terminals.
-2. In each, prepare an identical `curl` POST for the same `slotId`.
-3. Fire both as close to simultaneously as possible.
-4. Expected: one returns `200 OK` with the new appointment; the other returns `409 Conflict`.
 
 ---
 

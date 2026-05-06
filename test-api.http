@@ -29,19 +29,19 @@ GET {{host}}/health
 
 ###  BROWSE CATALOG DATA
 ###  Read-only queries against seed data.
-### List all services
+###  List all services
 ###     Expect: 8 services from seed data
 GET {{host}}/services
 
-### List available slots — Provider 1 (Lune, Barber)
+### List available slots - Provider 1 (Lune, Barber)
 ###     Replace the date with a valid future date in your seed window.
 GET {{host}}/slots?providerId=1&date=2026-05-09
 
-### List available slots — Provider 3 (Maelle, Nail Tech)
+### List available slots - Provider 3 (Maelle, Nail Tech)
 GET {{host}}/slots?providerId=3&date=2026-05-09
 
 ### List slots for an INACTIVE provider (Verso, providerId=5)
-###     Expect: empty result — inactive providers have no slots seeded
+###     Expect: empty result - inactive providers have no slots seeded
 GET {{host}}/slots?providerId=5&date=2026-05-09
 
 ### List slots for an out-of-range date (past or beyond 14 days)
@@ -162,7 +162,7 @@ Content-Type: application/json
   "customerId": 2,
   "serviceId": 1,
   "slotId": 7,
-  "notes": "Second booking — should fail with 409"
+  "notes": "Second booking, should fail with 409"
 }
 
 ###  Cancel a non-existent appointment
@@ -170,9 +170,9 @@ Content-Type: application/json
 PUT {{host}}/appointments/99999/cancel
 
 ### Cancel an already-cancelled appointment 
-###     Replace ID with one cancelled in 3.3.
+###     Replace ID with one cancelled in the happy path section above 
 ###     Expect: graceful handling, no crash, appropriate log warning
-PUT {{host}}/appointments/1/cancel
+PUT {{host}}/appointments/{id}/cancel
 
 
 ###  SYSTEM MANAGEMENT (M6): Metrics and log inspection.
@@ -201,7 +201,7 @@ Content-Type: application/json
   "customerId": 1,
   "serviceId": 2,
   "slotId": 99999,
-  "notes": "M6 — drives failure counter"
+  "notes": "drives failure counter"
 }
 
 ### Re-fetch metrics to confirm counters incremented

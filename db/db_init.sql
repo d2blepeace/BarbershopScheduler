@@ -1,7 +1,6 @@
 ## BARBERSHOP DATABASE INITIALIZATION
 ## Run with: mysql -u root -p < db_init.sql
 
-
 DROP DATABASE IF EXISTS barbershop_db;
 CREATE DATABASE barbershop_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE barbershop_db;
@@ -79,16 +78,23 @@ INSERT INTO providers (name, bio, avatar_url, is_active) VALUES
 ('Verso',   'Barber',          NULL, FALSE),
 ('Sciel',   'Barber',          NULL, FALSE);
 
-## Availability slots: next 14 days, 7 time slots per day, active providers only
-WITH RECURSIVE date_range AS (
-    SELECT CURDATE() + INTERVAL 1 DAY AS d
-    UNION ALL
-    SELECT d + INTERVAL 1 DAY FROM date_range WHERE d < CURDATE() + INTERVAL 14 DAY
-)
+## Availability slots: 30 days starting tomorrow, 7 time slots/day, active providers only
 INSERT INTO availability_slots (provider_id, date, time, is_available)
-SELECT p.provider_id, dr.d, t.time_slot, TRUE
+SELECT p.provider_id,
+        DATE_ADD(CURDATE(), INTERVAL n.num DAY) AS date,
+        t.time_slot,
+        TRUE
 FROM providers p
-CROSS JOIN date_range dr
+CROSS JOIN (
+    SELECT  1 AS num UNION ALL SELECT  2 UNION ALL SELECT  3 UNION ALL SELECT  4 UNION ALL
+    SELECT  5 UNION ALL SELECT  6 UNION ALL SELECT  7 UNION ALL SELECT  8 UNION ALL
+    SELECT  9 UNION ALL SELECT 10 UNION ALL SELECT 11 UNION ALL SELECT 12 UNION ALL
+    SELECT 13 UNION ALL SELECT 14 UNION ALL SELECT 15 UNION ALL SELECT 16 UNION ALL
+    SELECT 17 UNION ALL SELECT 18 UNION ALL SELECT 19 UNION ALL SELECT 20 UNION ALL
+    SELECT 21 UNION ALL SELECT 22 UNION ALL SELECT 23 UNION ALL SELECT 24 UNION ALL
+    SELECT 25 UNION ALL SELECT 26 UNION ALL SELECT 27 UNION ALL SELECT 28 UNION ALL
+    SELECT 29 UNION ALL SELECT 30
+) n
 CROSS JOIN (
     SELECT '09:00:00' AS time_slot UNION ALL
     SELECT '10:00:00' UNION ALL
