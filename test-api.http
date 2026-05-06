@@ -100,7 +100,7 @@ Content-Type: application/json
   "customerId": 1,
   "serviceId": 1,
   "slotId": 5,
-  "notes": "Concurrency test — Customer A"
+  "notes": "Concurrency test- Customer A"
 }
 
 ### Concurrent booking — Customer B 
@@ -111,7 +111,7 @@ Content-Type: application/json
   "customerId": 2,
   "serviceId": 1,
   "slotId": 5,
-  "notes": "Concurrency test — Customer B"
+  "notes": "Concurrency test - Customer B"
 }
 
 ###  EDGE CASES & ERROR HANDLING
